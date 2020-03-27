@@ -32,7 +32,7 @@ Just 4 simple components. Click to links and follow guides.
 
 ### Storage
 
-Storage is storage. This is the main component of the system.
+Storage is storage. This is the main component of the system. [Read more...](storage/README.md)
 
 ### Builder
 
