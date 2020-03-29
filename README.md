@@ -36,7 +36,7 @@ Storage is storage. This is the main component of the system. [Read more...](sto
 
 ### Builder
 
-This service updates your static repository.
+This service updates your static repository. [Read more...](builder/README.md)
 
 ### Proxy
 
@@ -45,6 +45,12 @@ This service adds basic auth with tokens support and provides access to packages
 ### Uploader
 
 This service uploads new packages to your storage and invokes Builder.
+
+
+License
+-------
+
+This source code is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE).
 
 
 Alternatives

@@ -1,0 +1,13 @@
+steps:
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', '-r', 'gs://${_META_DATA_BUCKET}', '.']
+    dir: '/workspace/metadata'
+  - name: busybox
+    entrypoint: 'sh'
+    args: ['-c', 'cat metadata/${_META_DATA_BUCKET}/*.meta > files.txt']
+  - name: eu.gcr.io/${PROJECT_ID}/dumb-pypi:latest
+    args: ['--package-list-json', 'files.txt', '--output-dir', 'static', '--packages-url', 'https://${_DOMAIN}/${_DIR}/']
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['-m', 'rsync', '-r', '-d', '-x', '".*json$"', 'static', 'gs://${_STATIC_BUCKET}/']
+substitutions:
+  _DIR: raw

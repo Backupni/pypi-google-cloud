@@ -1,0 +1,20 @@
+timeout: 600s
+
+images: ['eu.gcr.io/$PROJECT_ID/${_IMAGE}:${_TAG}']
+
+options:
+  sourceProvenanceHash: ['SHA256']
+
+tags: ['${_IMAGE}', 'release', 'pypi']
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/${_IMAGE}:${_TAG}', '${_DOCKERFILE}']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'eu.gcr.io/$PROJECT_ID/${_IMAGE}:${_TAG}']
+
+substitutions:
+  _IMAGE: dumb-pypi
+  _TAG: latest
+  _DOCKERFILE: .
