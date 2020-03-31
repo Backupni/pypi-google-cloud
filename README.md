@@ -40,7 +40,7 @@ This service updates your static repository. [Read more...](builder/README.md)
 
 ### Proxy
 
-This service adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users.
+This service adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users. [Read more...](proxy/README.md)
 
 ### Uploader
 
