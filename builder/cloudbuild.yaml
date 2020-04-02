@@ -1,13 +1,20 @@
+tags: ['pypi']
+
 steps:
+  # Download all Python packages meta data
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', '-r', 'gs://${_META_DATA_BUCKET}', '.']
     dir: '/workspace/metadata'
+  # Create config
   - name: busybox
     entrypoint: 'sh'
     args: ['-c', 'cat metadata/${_META_DATA_BUCKET}/*.meta > files.txt']
+  # Generate new repository static files
   - name: eu.gcr.io/${PROJECT_ID}/dumb-pypi:latest
     args: ['--package-list-json', 'files.txt', '--output-dir', 'static', '--packages-url', 'https://${_DOMAIN}/${_DIR}/']
+  # Sync repository
   - name: gcr.io/cloud-builders/gsutil
     args: ['-m', 'rsync', '-r', '-d', '-x', '".*json$"', 'static', 'gs://${_STATIC_BUCKET}/']
+
 substitutions:
   _DIR: raw

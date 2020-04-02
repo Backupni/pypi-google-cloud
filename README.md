@@ -44,7 +44,7 @@ This service adds basic auth with tokens support and provides access to packages
 
 ### Uploader
 
-This service uploads new packages to your storage and invokes Builder.
+This service uploads new packages to your storage and invokes Builder. [Read more...](uploader/README.md)
 
 
 License
