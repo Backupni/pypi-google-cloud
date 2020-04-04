@@ -28,23 +28,29 @@ Project Goals and Decisions
 Structure: Project Services and Components
 ------------------------------------------
 
-Just 4 simple components. Click to links and follow guides.
+Just 4 simple components.
 
 ### Storage
 
-Storage is storage. This is the main component of the system. [Read more...](storage/README.md)
+Storage is storage. This is the main component of the system. [Read more...](storage)
 
 ### Builder
 
-This service updates your static repository. [Read more...](builder/README.md)
+This service updates your static repository. [Read more...](builder)
 
 ### Proxy
 
-This service adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users. [Read more...](proxy/README.md)
+This service adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users. [Read more...](proxy)
 
 ### Uploader
 
-This service uploads new packages to your storage and invokes Builder. [Read more...](uploader/README.md)
+This service uploads new packages to your storage and invokes Builder. [Read more...](uploader)
+
+
+Install
+-------
+
+Please read and follow these installation instructions: [INSTALL.md](INSTALL.md).
 
 
 License
@@ -57,5 +63,5 @@ Alternatives
 ------------
 
 If you would like to use cloud agnostic solution, check this repositories:
-- stevearc/pypicloud
-- private-pypi/private-pypi
+- `stevearc/pypicloud`
+- `private-pypi/private-pypi`

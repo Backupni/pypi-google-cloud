@@ -11,24 +11,10 @@ Implementation
   - uses container image with `dumb-pypi` Python package (https://github.com/chriskuehl/dumb-pypi) as static generator
   - uploads generated static files to bucket
 
-Setup
------
+(Optional) Test `Builder` service
+---------------------------------
 
-### Manual
-
-#### Build image
-
-Run Cloud Build process:
-
-`$ gcloud builds submit --config builder/images/dumb-pypi/cloudbuild.yaml builder/images/dumb-pypi --project=YOUR_PROJECT_ID`.
-
-### Automatic
-
-Use Cloud Deployment Manager (https://cloud.google.com/deployment-manager/) and/or Terraform. Please, open new PR, contribute your code.
-
-### (Optional) Test `Builder` service
-
-#### Prepare test
+### Prepare test
 
 1. Open https://console.cloud.google.com in your browser and log in. Select your project.
 2. Open `Navigation menu` and click to `Storage` menu item. Or just click to this link: https://console.cloud.google.com/storage/browser
@@ -37,11 +23,15 @@ Use Cloud Deployment Manager (https://cloud.google.com/deployment-manager/) and/
 
   - Download any python package, for example, `functions-framework`. 
 
-    `$ python3 -m pip download functions-framework`
+    ```
+    $ python3 -m pip download 'functions-framework'
+    ```
   - Now we have, for example, `functions_framework-1.2.0-py3-none-any.whl` file, note this name.
   - Let's find out hash of this package.
 
-    `$ python3 -m pip hash -a sha256 functions_framework-1.2.0-py3-none-any.whl`
+    ```
+    $ python3 -m pip hash -a 'sha256' 'functions_framework-1.2.0-py3-none-any.whl'
+    ```
 
     ```
     functions_framework-1.2.0-py3-none-any.whl:
@@ -50,23 +40,33 @@ Use Cloud Deployment Manager (https://cloud.google.com/deployment-manager/) and/
     Note this hash. You may use `sha384` or `sha512` hashing algorithms instead of `sha256`. `PEP 503` recommendation is `sha256`.
   - Let's find out creation date now.
 
-    `$ stat -r functions_framework-1.2.0-py3-none-any.whl`
+    ```
+    $ stat -r 'functions_framework-1.2.0-py3-none-any.whl'
+    ```
 
     Note creation unix timestamp like `1585401713`.
 
   - Now we have all required information to create test metadata json object.
 
-    `$ print '{"filename": "functions_framework-1.2.0-py3-none-any.whl", "hash": "sha256=8abe57b908ea054893c1e9c8ea49c8ac1c405fc2988c05109d255345ea9595d0", "uploaded_by": "testuser", "upload_timestamp": 1585401713}' > functions_framework-1.2.0-py3-none-any.whl.meta`
+    ```
+    $ print '{"filename": "functions_framework-1.2.0-py3-none-any.whl", "hash": "sha256=8abe57b908ea054893c1e9c8ea49c8ac1c405fc2988c05109d255345ea9595d0", "uploaded_by": "testuser", "upload_timestamp": 1585401713}' > functions_framework-1.2.0-py3-none-any.whl.meta
+    ```
   - Click to `Upload files` button and upload `functions_framework-1.2.0-py3-none-any.whl.meta` to metadata bucket.
 
-#### Run test
+### Run test
 
 Run build process (replace `pypi-metadata-uogykq`, `packages-internal.example.com`, `packages.example.com` and `YOUR_PROJECT_ID` to your data: 
    
-`$ gcloud builds submit --substitutions=_META_DATA_BUCKET="pypi-metadata-uogykq",_STATIC_BUCKET="packages-internal.example.com",_DOMAIN="packages.example.com" --config builder/cloudbuild.yaml --no-source --project=YOUR_PROJECT_ID`.
+```
+$ gcloud builds submit \
+      --substitutions='_META_DATA_BUCKET="pypi-metadata-uogykq",_STATIC_BUCKET="packages-internal.example.com",_DOMAIN="packages.example.com"' \
+      --config='builder/cloudbuild.yaml' \
+      --no-source \
+      --project='YOUR_PROJECT_ID'
+```
 
 
-#### Check test results
+### Check test results
 
 Open your static website bucket (ex. `packages-internal.example.com`) and view changes. 
 
