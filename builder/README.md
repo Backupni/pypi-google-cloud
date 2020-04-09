@@ -8,7 +8,7 @@ Implementation
 
 - Cloud Build process
   - combines metadata and prepare config for static generator tool
-  - uses container image with `dumb-pypi` Python package (https://github.com/chriskuehl/dumb-pypi) as static generator
+  - uses `dumb-pypi` image ([see available image tags](https://hub.docker.com/r/backupner/dumb-pypi/tags), [GitHub repository](https://github.com/backupner/dumb-pypi-image)) as static generator
   - uploads generated static files to bucket
 
 (Optional) Test `Builder` service

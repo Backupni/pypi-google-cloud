@@ -10,7 +10,7 @@ steps:
     entrypoint: 'sh'
     args: ['-c', 'cat metadata/${_META_DATA_BUCKET}/*.meta > files.txt']
   # Generate new repository static files
-  - name: eu.gcr.io/${PROJECT_ID}/dumb-pypi:latest
+  - name: '${_DUMB_PYPI_IMAGE}'
     args: ['--package-list-json', 'files.txt', '--output-dir', 'static', '--packages-url', 'https://${_DOMAIN}/${_DIR}/']
   # Sync repository
   - name: gcr.io/cloud-builders/gsutil
@@ -18,3 +18,4 @@ steps:
 
 substitutions:
   _DIR: raw
+  _DUMB_PYPI_IMAGE: 'backupner/dumb-pypi:1.4-latest'
