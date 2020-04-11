@@ -42,26 +42,6 @@ $ gcloud projects add-iam-policy-binding \
       --role='roles/iam.serviceAccountTokenCreator'
 ```
 
-### Build images for `Builder` process and `Proxy` service
-
-Build container image for `Builder` process:
-
-```
-$ gcloud builds submit \
-      'builder/images/dumb-pypi' \
-      --config='builder/images/dumb-pypi/cloudbuild.yaml' \
-      --project='YOUR_PROJECT_ID'
-```
-
-Build container image for `Proxy` service:
-
-```
-$ gcloud builds submit \
-      'proxy/images/pypi-gcs-proxy' \
-      --config='proxy/images/pypi-gcs-proxy/cloudbuild.yaml' \
-      --project='YOUR_PROJECT_ID'
-```
-
 ### Create new `Storage` buckets.
 
 You need create 3 buckets (ex. `pypi-packages-iobszb` for packages store, `pypi-static-ioM6ch` for static website and `pypi-meta-uogykq` for meta data store).
@@ -157,6 +137,17 @@ $ gcloud secrets add-iam-policy-binding \
       'pypi-token' \
       --member='serviceAccount:pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com' \
       --role='roles/secretmanager.secretAccessor' \
+      --project='YOUR_PROJECT_ID'
+```
+
+### Upload image for `Proxy` service to registry
+
+Run process:
+
+```
+$ gcloud builds submit \
+      --config='proxy/cloudbuild.yaml' \
+      --no-source \
       --project='YOUR_PROJECT_ID'
 ```
 

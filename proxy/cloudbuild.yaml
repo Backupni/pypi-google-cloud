@@ -9,12 +9,15 @@ tags: ['${_IMAGE}', 'release', 'pypi']
 
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'eu.gcr.io/$PROJECT_ID/${_IMAGE}:${_TAG}', '${_DOCKERFILE}']
+  args: ['pull', '${_PYPI_GCS_PROXY_IMAGE}']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', '${_PYPI_GCS_PROXY_IMAGE}', 'eu.gcr.io/$PROJECT_ID/${_IMAGE}:${_TAG}']
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'eu.gcr.io/$PROJECT_ID/${_IMAGE}:${_TAG}']
 
 substitutions:
-  _IMAGE: pypi-gcs-proxy
-  _TAG: latest
-  _DOCKERFILE: .
+  _IMAGE: 'pypi-gcs-proxy'
+  _PYPI_GCS_PROXY_IMAGE: 'backupner/pypi-gcs-proxy:latest'
+  _TAG: 'latest'

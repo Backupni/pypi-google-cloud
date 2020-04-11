@@ -7,7 +7,7 @@ Implementation
 --------------
 
 - Cloud Build process
-  - invokes `Builder` on success after uploading
+  - invokes `Builder` steps on success after uploading
 
 How to use
 ----------
