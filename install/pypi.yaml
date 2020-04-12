@@ -1,0 +1,6 @@
+imports:
+- path: service-account-template.py
+
+resources:
+- name: pypi-proxy
+  type: service-account-template.py

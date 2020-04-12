@@ -11,36 +11,57 @@ Preparation
    Sign in to your Google account (sign up for a new account if needed) and follow instructions.
 2. Open [Google Cloud Console](https://console.cloud.google.com/projectselector2/home/dashboard) and select or create new (recommended) Cloud project.
 3. Open `Navigation menu` and click to `Billing`. Make sure you have activated billing account for this project. ([Read official docs](https://cloud.google.com/billing/docs/how-to/modify-project) if you are stuck.)
-4. Create budget (optional but recommended). Open your billing account page and click to `Budgets & Alerts` menu button. After that click to `CREATE BUDGET` button and follow instructions.
+4. (Optional but recommended) Create budget. Open your billing account page and click to `Budgets & Alerts` menu button. After that click to `CREATE BUDGET` button and follow instructions.
 5. (Optional) Install `Google Cloud SDK` tools, [read more official docs](https://cloud.google.com/sdk/install) (`Installation options` section). You can use Web GUI and click to `Activate Cloud Shell` button in top right menu instead.
+6. Prepare `Deployment Manager` (DM).
+
+   Let us explain. As perfectionists we would like to automate granting access permission throw `Deployment Manager`. 
+   But it require to extend default permissions for DM project-level service account itself. 
+
+   First, get your project number:
+
+   Replace `YOUR_PROJECT_ID` in code below to your real Cloud project id.
+
+   ```sh
+   gcloud projects describe \
+       'YOUR_PROJECT_ID' \
+       --format='value(project_number)'
+   ```
+
+   Now grant `Service Account Admin` role to your `Deployment Manager` project service account:
+
+   Replace `YOUR_PROJECT_NUMBER` in code below to your real Cloud project number.
+
+   ```sh
+   gcloud projects add-iam-policy-binding \
+       'YOUR_PROJECT_ID' \
+       --member='serviceAccount:YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com' \
+       --role='roles/iam.serviceAccountAdmin'
+   ```
 
 
 Setup
 -----
 
-Replace `YOUR_PROJECT_ID` in code below to your real Cloud project id.
+### Clone repository
 
-### Create required service accounts
-
-We need single service account for `Proxy` service with project level permissions (`Service Account Token Creator` role).
-
-```
-$ gcloud iam service-accounts create \
-      'pypi-proxy' \
-      --description='PyPi Proxy service account' \
-      --display-name='PyPI proxy' \
-      --project='YOUR_PROJECT_ID'
+```sh
+git clone git@github.com:backupner/pypi-google-cloud.git
 ```
 
-#### Grant role
+### Run installation script
 
-Grant `Service Account Token Creator` role to service account:
+```sh
+gcloud deployment-manager deployments create \
+    'pypi' \
+    --config='install/pypi.yaml' \
+    --description='PyPi application' \
+    --labels='app=pypi' \
+    --project='YOUR_PROJECT_ID' \
+    --preview
 ```
-$ gcloud projects add-iam-policy-binding \
-      'YOUR_PROJECT_ID' \
-      --member='serviceAccount:pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com' \
-      --role='roles/iam.serviceAccountTokenCreator'
-```
+
+[Sorry, our installation script is incomplete right now that's why you need manually execute several commands below... We will fix it soon]
 
 ### Create new `Storage` buckets.
 
