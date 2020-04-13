@@ -1,6 +1,9 @@
 imports:
 - path: service-account-template.py
+- path: storage-template.py
 
 resources:
 - name: pypi-proxy
   type: service-account-template.py
+- name: pypi-storage
+  type: storage-template.py

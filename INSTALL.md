@@ -28,7 +28,7 @@ Preparation
        --format='value(project_number)'
    ```
 
-   Now grant `Service Account Admin` role to your `Deployment Manager` project service account:
+   Now grant `Service Account Admin` and `Storage Admin` roles to your `Deployment Manager` project service account:
 
    Replace `YOUR_PROJECT_NUMBER` in code below to your real Cloud project number.
 
@@ -37,6 +37,13 @@ Preparation
        'YOUR_PROJECT_ID' \
        --member='serviceAccount:YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com' \
        --role='roles/iam.serviceAccountAdmin'
+   ```
+
+   ```sh
+   gcloud projects add-iam-policy-binding \
+       'YOUR_PROJECT_ID' \
+       --member='serviceAccount:YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com' \
+       --role='roles/storage.admin'
    ```
 
 
@@ -62,68 +69,6 @@ gcloud deployment-manager deployments create \
 ```
 
 [Sorry, our installation script is incomplete right now that's why you need manually execute several commands below... We will fix it soon]
-
-### Create new `Storage` buckets.
-
-You need create 3 buckets (ex. `pypi-packages-iobszb` for packages store, `pypi-static-ioM6ch` for static website and `pypi-meta-uogykq` for meta data store).
-
-You MUST choose globally unique bucket names. You MAY use results of this command as bucket name unique suffixes:
-
-```
-$ pwgen 6 3
-```
-
-Replace `YOUR_PACKAGES_BUCKET_NAME`, `YOUR_STATIC_BUCKET_NAME`, and `YOUR_META_DATA_BUCKET_NAME` in code below to your bucket names.
-
-```
-$ gsutil mb \
-      -b 'on' \
-      -c 'Standard' \
-      -l 'EU' \
-      -p 'YOUR_PROJECT_ID' \
-      'gs://YOUR_PACKAGES_BUCKET_NAME'
-```
-```
-$ gsutil mb \
-      -b 'on' \
-      -c 'Standard' \
-      -l 'EU' \
-      -p 'YOUR_PROJECT_ID' \
-      'gs://YOUR_STATIC_BUCKET_NAME'
-```
-```
-$ gsutil mb \
-      -b 'on' \
-      -c 'Standard' \
-      -l 'EU' \
-      -p 'YOUR_PROJECT_ID' \
-      'gs://YOUR_META_DATA_BUCKET_NAME'
-```
-```
-$ gsutil label ch -l 'app:pypi' 'gs://YOUR_PACKAGES_BUCKET_NAME'
-```
-```
-$ gsutil label ch -l 'app:pypi' 'gs://YOUR_STATIC_BUCKET_NAME'
-```
-```
-$ gsutil label ch -l 'app:pypi' 'gs://YOUR_META_DATA_BUCKET_NAME'
-```
-
-Feel free to adapt this guide for your needs. You may want to change location, for example, to `US` (don't forget to use project search and make related changes in `cloudbuild.yaml` files).  
-
-#### Grant role
-
-Grant `Storage Legacy Bucket Reader` and `Storage Legacy Object Reader` roles to `pypi-proxy` service account for packages and meta data buckets:
-```
-$ gsutil iam ch \
-      'serviceAccount:pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com:legacyBucketReader,legacyObjectReader' \
-      'gs://YOUR_PACKAGES_BUCKET_NAME'
-```
-```
-$ gsutil iam ch \
-      'serviceAccount:pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com:legacyBucketReader,legacyObjectReader' \
-      'gs://YOUR_META_DATA_BUCKET_NAME'
-```
 
 
 ### Create new secret
@@ -188,7 +133,7 @@ $ gcloud run deploy \
       --platform='managed' \
       --port='8080' \
       --timeout='5m' \
-      --set-env-vars='STATIC_BUCKET_NAME=YOUR_STATIC_BUCKET_NAME,PACKAGES_BUCKET_NAME=YOUR_PACKAGES_BUCKET_NAME,TOKEN_NAME=YOUR_TOKEN_VERSION_NAME' \
+      --set-env-vars='STATIC_BUCKET_NAME=pypi-YOUR_PROJECT_ID-static,PACKAGES_BUCKET_NAME=pypi-YOUR_PROJECT_ID-packages,TOKEN_NAME=YOUR_TOKEN_VERSION_NAME' \
       --update-labels='app=pypi' \
       --allow-unauthenticated \
       --service-account='pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com' \

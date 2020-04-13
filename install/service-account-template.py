@@ -2,12 +2,14 @@ from typing import Any, Dict, List
 
 
 def generate_config(context: Any) -> Dict[str, List]:
+    deployment = context.env['deployment']
+    project = context.env['project']
     resources = [
         {
-            'name': 'pypi-proxy',
+            'name': '{deployment}-proxy'.format(deployment=deployment),
             'type': 'gcp-types/iam-v1:projects.serviceAccounts',
             'properties': {
-                'accountId': 'pypi-proxy',
+                'accountId': '{deployment}-proxy'.format(deployment=deployment),
                 'serviceAccount': {
                     'displayName': 'PyPI proxy',
                     'description': 'PyPi Proxy service account',
@@ -19,7 +21,7 @@ def generate_config(context: Any) -> Dict[str, List]:
                         {
                             'role': 'roles/iam.serviceAccountTokenCreator',
                             'members': [
-                                'serviceAccount:pypi-proxy@{project}.iam.gserviceaccount.com'.format(project=context.env['project']),
+                                'serviceAccount:{deployment}-proxy@{project}.iam.gserviceaccount.com'.format(deployment=deployment, project=project),
                             ],
                         },
                     ],
