@@ -13,51 +13,26 @@ Preparation
 3. Open `Navigation menu` and click to `Billing`. Make sure you have activated billing account for this project. ([Read official docs](https://cloud.google.com/billing/docs/how-to/modify-project) if you are stuck.)
 4. (Optional but recommended) Create budget. Open your billing account page and click to `Budgets & Alerts` menu button. After that click to `CREATE BUDGET` button and follow instructions.
 5. (Optional) Install `Google Cloud SDK` tools, [read more official docs](https://cloud.google.com/sdk/install) (`Installation options` section). You can use Web GUI and click to `Activate Cloud Shell` button in top right menu instead.
-6. Prepare `Deployment Manager` (DM).
-
-   Let us explain. As perfectionists we would like to automate granting access permission throw `Deployment Manager`. 
-   But it require to extend default permissions for DM project-level service account itself. 
-
-   First, get your project number:
-
-   Replace `YOUR_PROJECT_ID` in code below to your real Cloud project id.
+6. Clone repository
 
    ```sh
-   gcloud projects describe \
-       'YOUR_PROJECT_ID' \
-       --format='value(project_number)'
+   git clone git@github.com:backupner/pypi-google-cloud.git && cd 'pypi-google-cloud'
    ```
 
-   Now grant `Service Account Admin` and `Storage Admin` roles to your `Deployment Manager` project service account:
+7. Prepare `Deployment Manager` (DM).
 
-   Replace `YOUR_PROJECT_NUMBER` in code below to your real Cloud project number.
+   Grant `Service Account Admin` and `Storage Admin` roles to `Deployment Manager`'s project level service account.
+   Grant `Secret Manager Admin` role to `Cloud Build`'s project level service account.
 
    ```sh
-   gcloud projects add-iam-policy-binding \
-       'YOUR_PROJECT_ID' \
-       --member='serviceAccount:YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com' \
-       --role='roles/iam.serviceAccountAdmin'
+   bash ./install/grant_permissions
    ```
-
-   ```sh
-   gcloud projects add-iam-policy-binding \
-       'YOUR_PROJECT_ID' \
-       --member='serviceAccount:YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com' \
-       --role='roles/storage.admin'
-   ```
-
 
 Setup
 -----
 
-### Clone repository
-
-```sh
-git clone git@github.com:backupner/pypi-google-cloud.git
-```
-
-### Run installation script
-
+Replace `YOUR_PROJECT_ID` in code below to your real Cloud project id and run command.
+   
 ```sh
 gcloud deployment-manager deployments create \
     'pypi' \
@@ -70,41 +45,6 @@ gcloud deployment-manager deployments create \
 
 [Sorry, our installation script is incomplete right now that's why you need manually execute several commands below... We will fix it soon]
 
-
-### Create new secret
-
-Create new secret with generated random token (you MAY generate several tokens and separate them by spaces):
-
-```
-$ pwgen 172 1 | gcloud secrets create \
-      'pypi-token' \
-      --data-file='-' \
-      --labels='app=pypi' \
-      --replication-policy='automatic' \
-      --project='YOUR_PROJECT_ID'
-```
-
-You just created new secret with first version of secret value. 
-
-```
-$ gcloud secrets versions describe \
-      '1' \
-      --secret='pypi-token' \
-      --project='YOUR_PROJECT_ID'
-```
-
-Save `name` value for future use (is should look like `projects/YOUR_PROJECT_ID/secrets/pypi-token/versions/1`). Replace `YOUR_TOKEN_VERSION_NAME` in code below to this value.
-
-#### Grant role
-
-Grant `Secret Manager Secret Accessor` roles:
-```
-$ gcloud secrets add-iam-policy-binding \
-      'pypi-token' \
-      --member='serviceAccount:pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com' \
-      --role='roles/secretmanager.secretAccessor' \
-      --project='YOUR_PROJECT_ID'
-```
 
 ### Upload image for `Proxy` service to registry
 
@@ -133,7 +73,7 @@ $ gcloud run deploy \
       --platform='managed' \
       --port='8080' \
       --timeout='5m' \
-      --set-env-vars='STATIC_BUCKET_NAME=pypi-YOUR_PROJECT_ID-static,PACKAGES_BUCKET_NAME=pypi-YOUR_PROJECT_ID-packages,TOKEN_NAME=YOUR_TOKEN_VERSION_NAME' \
+      --set-env-vars='STATIC_BUCKET_NAME=pypi-YOUR_PROJECT_ID-static,PACKAGES_BUCKET_NAME=pypi-YOUR_PROJECT_ID-packages,TOKEN_NAME=projects/YOUR_PROJECT_ID/secrets/pypi-token/versions/1' \
       --update-labels='app=pypi' \
       --allow-unauthenticated \
       --service-account='pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com' \

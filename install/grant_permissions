@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -Eeuxo pipefail
+
+read -rp 'Your project ID: ' project_id
+PROJECT_NUMBER=$(gcloud projects describe "$project_id" --format='value(project_number)')
+CLOUD_SERVICES_SERVICE_ACCOUNT="${PROJECT_NUMBER}@cloudservices.gserviceaccount.com"
+CLOUD_BUILD_SERVICE_ACCOUNT="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
+gcloud projects add-iam-policy-binding \
+       "$project_id" \
+       --member="serviceAccount:${CLOUD_SERVICES_SERVICE_ACCOUNT}" \
+       --role='roles/iam.serviceAccountAdmin'
+gcloud projects add-iam-policy-binding \
+       "$project_id" \
+       --member="serviceAccount:${CLOUD_SERVICES_SERVICE_ACCOUNT}" \
+       --role='roles/storage.admin'
+gcloud projects add-iam-policy-binding \
+       "$project_id" \
+       --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
+       --role='roles/secretmanager.admin'
