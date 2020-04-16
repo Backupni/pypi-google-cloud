@@ -27,6 +27,11 @@ def generate_config(context: Any) -> Dict[str, List]:
                     ],
                 },
             },
+            'metadata': {
+                'dependsOn': [
+                    '{deployment}-services-enable-iam'.format(deployment=deployment),
+                ],
+            },
         },
     ]
     return {

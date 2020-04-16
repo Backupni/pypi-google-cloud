@@ -98,6 +98,8 @@ def generate_config(context: Any) -> Dict[str, List]:
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'dependsOn': [
+                    '{deployment}-proxy'.format(deployment=deployment),
+                    '{deployment}-services-enable-run'.format(deployment=deployment),
                     'download-{deployment}-proxy-container-image'.format(deployment=deployment),
                 ],
                 'runtimePolicy': ['CREATE'],
@@ -120,6 +122,9 @@ def generate_config(context: Any) -> Dict[str, List]:
             'name': 'delete-{deployment}-proxy-run-service'.format(deployment=deployment),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
+                'dependsOn': [
+                    '{deployment}-services-enable-run'.format(deployment=deployment),
+                ],
                 'runtimePolicy': ['DELETE'],
             },
             'properties': {

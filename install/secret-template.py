@@ -40,6 +40,10 @@ def generate_config(context: Any) -> Dict[str, List]:
             'name': 'create-{deployment}-token'.format(deployment=deployment),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
+                'dependsOn': [
+                    '{deployment}-proxy'.format(deployment=deployment),
+                    '{deployment}-services-enable-secretmanager'.format(deployment=deployment),
+                ],
                 'runtimePolicy': ['CREATE'],
             },
             'properties': {
@@ -74,6 +78,9 @@ def generate_config(context: Any) -> Dict[str, List]:
             'name': 'delete-{deployment}-token'.format(deployment=deployment),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
+                'dependsOn': [
+                    '{deployment}-services-enable-secretmanager'.format(deployment=deployment),
+                ],
                 'runtimePolicy': ['DELETE'],
             },
             'properties': {

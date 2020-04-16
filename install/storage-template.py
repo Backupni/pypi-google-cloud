@@ -93,6 +93,7 @@ def generate_config(context: Any) -> Dict[str, List]:
             },
             'metadata': {
                 'dependsOn': [
+                    '{deployment}-proxy'.format(deployment=deployment),
                     '{bucket_name_prefix}packages'.format(bucket_name_prefix=bucket_name_prefix),
                 ],
             },
@@ -136,6 +137,7 @@ def generate_config(context: Any) -> Dict[str, List]:
             },
             'metadata': {
                 'dependsOn': [
+                    '{deployment}-proxy'.format(deployment=deployment),
                     '{bucket_name_prefix}static'.format(bucket_name_prefix=bucket_name_prefix),
                 ],
             },
@@ -177,6 +179,7 @@ def generate_config(context: Any) -> Dict[str, List]:
             },
             'metadata': {
                 'dependsOn': [
+                    '{deployment}-proxy'.format(deployment=deployment),
                     '{bucket_name_prefix}meta'.format(bucket_name_prefix=bucket_name_prefix),
                 ],
             },

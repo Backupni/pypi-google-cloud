@@ -3,6 +3,7 @@ set -Eeuxo pipefail
 
 read -rp 'Your project ID: ' project_id
 PROJECT_NUMBER=$(gcloud projects describe "$project_id" --format='value(project_number)')
+gcloud services enable deploymentmanager.googleapis.com cloudbuild.googleapis.com --project="$project_id"
 CLOUD_SERVICES_SERVICE_ACCOUNT="${PROJECT_NUMBER}@cloudservices.gserviceaccount.com"
 CLOUD_BUILD_SERVICE_ACCOUNT="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
 gcloud projects add-iam-policy-binding \
