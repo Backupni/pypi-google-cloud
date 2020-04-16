@@ -1,12 +1,15 @@
 imports:
+- path: run-template.py
+- path: secret-template.py
 - path: service-account-template.py
 - path: storage-template.py
-- path: secret-template.py
 
 resources:
+- name: pypi-run
+  type: run-template.py
+- name: pypi-secret
+  type: secret-template.py
 - name: pypi-proxy
   type: service-account-template.py
 - name: pypi-storage
   type: storage-template.py
-- name: pypi-secret
-  type: secret-template.py

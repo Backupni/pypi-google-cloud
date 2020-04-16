@@ -40,7 +40,7 @@ def generate_config(context: Any) -> Dict[str, List]:
             'name': 'create-{deployment}-token'.format(deployment=deployment),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
-                'runtimePolicy': ['CREATE']
+                'runtimePolicy': ['CREATE'],
             },
             'properties': {
                 'steps': [
@@ -61,22 +61,20 @@ def generate_config(context: Any) -> Dict[str, List]:
                         ],
                     },
                 ],
+                'timeout': '120s',
                 'options': {
                     'env': [
                         'CLOUDSDK_CORE_DISABLE_PROMPTS=1',
                     ],
-                    'tags': [
-                        'app:{deployment}'.format(deployment=deployment),
-                    ],
                 },
-                'timeout': '120s'
+                'tags': [deployment],
             },
         },
         {
             'name': 'delete-{deployment}-token'.format(deployment=deployment),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
-                'runtimePolicy': ['DELETE']
+                'runtimePolicy': ['DELETE'],
             },
             'properties': {
                 'steps': [
@@ -92,7 +90,8 @@ def generate_config(context: Any) -> Dict[str, List]:
                         ],
                     },
                 ],
-                'timeout': '120s'
+                'timeout': '120s',
+                'tags': [deployment],
             },
         },
     ]

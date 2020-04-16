@@ -115,6 +115,7 @@ def generate_config(context: Any) -> Dict[str, List]:
                         'role': 'roles/storage.legacyBucketReader',
                         'members': [
                             'projectViewer:{project}'.format(project=project),
+                            'serviceAccount:{deployment}-proxy@{project}.iam.gserviceaccount.com'.format(deployment=deployment, project=project),
                         ],
                     },
                     {
@@ -128,6 +129,7 @@ def generate_config(context: Any) -> Dict[str, List]:
                         'role': 'roles/storage.legacyObjectReader',
                         'members': [
                             'projectViewer:{project}'.format(project=project),
+                            'serviceAccount:{deployment}-proxy@{project}.iam.gserviceaccount.com'.format(deployment=deployment, project=project),
                         ],
                     },
                 ],
@@ -156,7 +158,6 @@ def generate_config(context: Any) -> Dict[str, List]:
                         'role': 'roles/storage.legacyBucketReader',
                         'members': [
                             'projectViewer:{project}'.format(project=project),
-                            'serviceAccount:{deployment}-proxy@{project}.iam.gserviceaccount.com'.format(deployment=deployment, project=project),
                         ],
                     },
                     {
@@ -170,7 +171,6 @@ def generate_config(context: Any) -> Dict[str, List]:
                         'role': 'roles/storage.legacyObjectReader',
                         'members': [
                             'projectViewer:{project}'.format(project=project),
-                            'serviceAccount:{deployment}-proxy@{project}.iam.gserviceaccount.com'.format(deployment=deployment, project=project),
                         ],
                     },
                 ],

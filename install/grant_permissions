@@ -17,3 +17,11 @@ gcloud projects add-iam-policy-binding \
        "$project_id" \
        --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
        --role='roles/secretmanager.admin'
+gcloud projects add-iam-policy-binding \
+       "$project_id" \
+       --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
+       --role='roles/run.admin'
+gcloud projects add-iam-policy-binding \
+       "$project_id" \
+       --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
+       --role='roles/iam.serviceAccountUser'

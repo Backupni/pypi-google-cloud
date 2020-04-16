@@ -22,7 +22,7 @@ Preparation
 7. Prepare `Deployment Manager` (DM).
 
    Grant `Service Account Admin` and `Storage Admin` roles to `Deployment Manager`'s project level service account.
-   Grant `Secret Manager Admin` role to `Cloud Build`'s project level service account.
+   Grant `Secret Manager Admin`, `Cloud Run Admin` and `Service Account User` roles to `Cloud Build`'s project level service account.
 
    ```sh
    bash ./install/grant_permissions
@@ -43,55 +43,7 @@ gcloud deployment-manager deployments create \
     --preview
 ```
 
-[Sorry, our installation script is incomplete right now that's why you need manually execute several commands below... We will fix it soon]
-
-
-### Upload image for `Proxy` service to registry
-
-Run process:
-
-```
-$ gcloud builds submit \
-      --config='proxy/cloudbuild.yaml' \
-      --no-source \
-      --project='YOUR_PROJECT_ID'
-```
-
-### Run `Proxy` service
-
-Create `Proxy` service:
-```
-$ gcloud run deploy \
-      'pypi-gcs-proxy' \
-      --image='eu.gcr.io/YOUR_PROJECT_ID/pypi-gcs-proxy:latest' \
-      --args='' \
-      --command='' \
-      --concurrency='80' \
-      --cpu='1' \
-      --max-instances='10' \
-      --memory='128Mi' \
-      --platform='managed' \
-      --port='8080' \
-      --timeout='5m' \
-      --set-env-vars='STATIC_BUCKET_NAME=pypi-YOUR_PROJECT_ID-static,PACKAGES_BUCKET_NAME=pypi-YOUR_PROJECT_ID-packages,TOKEN_NAME=projects/YOUR_PROJECT_ID/secrets/pypi-token/versions/1' \
-      --update-labels='app=pypi' \
-      --allow-unauthenticated \
-      --service-account='pypi-proxy@YOUR_PROJECT_ID.iam.gserviceaccount.com' \
-      --region='europe-west1' \
-      --project='YOUR_PROJECT_ID'
-```
-
-Assign traffic:
-```
-$ gcloud run services update-traffic \
-      'pypi-gcs-proxy' \
-      --platform='managed' \
-      --region='europe-west1' \
-      --to-latest \
-      --project='YOUR_PROJECT_ID'
-```
-
-#### (Optional) Configure custom domain name
+### (Optional) Configure custom domain name
 
 Cloud Run generates your service URL like this: `https://pypi-gcs-proxy-xoeq6xeb4q-ew.a.run.app`. You can create subdomain (ex. `packages.example.com`) and use it instead.
 
@@ -99,13 +51,13 @@ Note `beta`, we use beta command here because of GA version of this command is n
 
 Replace `YOUR_DOMAIN_NAME` to your real domain name (ex. `packages.example.com`)
 
-```
-$ gcloud beta run domain-mappings create \
-      --service='pypi-gcs-proxy' \
-      --domain='YOUR_DOMAIN_NAME' \
-      --platform='managed' \
-      --region='europe-west1' \
-      --project='YOUR_PROJECT_ID'
+```sh
+gcloud beta run domain-mappings create \
+    --service='pypi-gcs-proxy' \
+    --domain='YOUR_DOMAIN_NAME' \
+    --platform='managed' \
+    --region='europe-west1' \
+    --project='YOUR_PROJECT_ID'
 ```
 
 Update DNS records.
@@ -117,7 +69,20 @@ You can use `https://packages.example.com` instead of `https://pypi-gcs-proxy-xo
 
 Installation complete. Just add private repository to your `pyproject.toml` and use `poetry` (or `pip`) as usual. Read more about private repositories in [poetry docs](https://python-poetry.org/docs/repositories/#using-a-private-repository) if you need additional help...
 
-Automatic Setup
----------------
+Uninstall
+---------
 
-Use [Cloud Deployment Manager](https://cloud.google.com/deployment-manager/) (recommended) and/or Terraform. Please, open new PR, contribute your code.
+- (Recommended) Just delete your private PyPi project. 
+
+  ```sh
+  gcloud projects delete 'YOUR_PROJECT_ID'
+  ```
+- (Alternative) If you use shared project run this command:
+
+  ```sh
+  gcloud deployment-manager deployments delete \
+      'pypi' \
+      --project='YOUR_PROJECT_ID'
+  ```
+
+  You should also check assigned roles for `YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com` and `YOUR_PROJECT_NUMBER@cloudbuild.gserviceaccount.com` service accounts.
