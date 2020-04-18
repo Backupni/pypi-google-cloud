@@ -5,6 +5,9 @@ def generate_config(context):
         {
             'name': 'pypi-run',
             'type': 'run-template.py',
+            'properties': {
+                'region': context.properties['region'],
+            },
         },
         {
             'name': 'pypi-secret',
