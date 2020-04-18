@@ -1,4 +1,5 @@
 imports:
+- path: pypi-template.py
 - path: run-template.py
 - path: secret-template.py
 - path: service-account-template.py
@@ -6,13 +7,7 @@ imports:
 - path: storage-template.py
 
 resources:
-- name: pypi-run
-  type: run-template.py
-- name: pypi-secret
-  type: secret-template.py
-- name: pypi-service-account
-  type: service-account-template.py
-- name: pypi-services
-  type: services-template.py
-- name: pypi-storage
-  type: storage-template.py
+- name: pypi
+  path: pypi-template.py
+  properties:
+    region: 'europe-west1'

@@ -1,8 +1,6 @@
 from typing import Any, Dict, List
 
 
-REGION = 'europe-west1'
-
 ENV_VARS_TEMPLATE = ','.join([
     'STATIC_BUCKET_NAME={deployment}-{project}-static',
     'PACKAGES_BUCKET_NAME={deployment}-{project}-packages',
@@ -25,7 +23,7 @@ DEPLOY_CONTAINER_ARGS_TEMPLATE = [
     '--update-labels', 'app={deployment}',
     '--allow-unauthenticated',
     '--service-account', '{deployment}-proxy@{project}.iam.gserviceaccount.com',
-    '--region', REGION,
+    '--region', '{region}',
     '--project', '{project}',
 ]
 
@@ -33,7 +31,7 @@ DELETE_SERVICE_ARGS_TEMPLATE = [
     'run', 'services', 'delete',
     '{deployment}-gcs-proxy',
     '--platform', 'managed',
-    '--region', REGION,
+    '--region', '{region}',
     '--project', '{project}',
 ]
 
@@ -47,6 +45,7 @@ def generate_config(context: Any) -> Dict[str, List]:
     Todo: create custom type providers (or wait for Google)"""
     deployment = context.env['deployment']
     project = context.env['project']
+    region = context.properties['region']
     internal_pypi_gcs_proxy_image = INTERNAL_PYPI_GCS_PROXY_IMAGE_TEMPLATE.format(deployment=deployment, project=project)
     deploy_container_args = DEPLOY_CONTAINER_ARGS_TEMPLATE
     deploy_container_args[2] = deploy_container_args[2].format(deployment=deployment)
@@ -54,9 +53,11 @@ def generate_config(context: Any) -> Dict[str, List]:
     deploy_container_args[24] = ENV_VARS_TEMPLATE.format(deployment=deployment, project=project)
     deploy_container_args[26] = deploy_container_args[26].format(deployment=deployment)
     deploy_container_args[29] = deploy_container_args[29].format(deployment=deployment, project=project)
+    deploy_container_args[31] = region
     deploy_container_args[33] = project
     delete_container_args = DELETE_SERVICE_ARGS_TEMPLATE
     delete_container_args[3] = delete_container_args[3].format(deployment=deployment)
+    delete_container_args[7] = region
     delete_container_args[9] = project
     resources = [
         {

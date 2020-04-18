@@ -4,8 +4,6 @@ Installation Tutorial
 Select project
 --------------
 
-Create a new project (recommended) or select existent project.
-
 <walkthrough-project-billing-setup></walkthrough-project-billing-setup>
 
 
@@ -20,16 +18,20 @@ Grant `Secret Manager Admin`, `Cloud Run Admin` and `Service Account User` roles
 Run command.
 
 ```sh
-cd 'pypi-google-cloud' && PROJECT_ID='{{project-id}}' ./install/grant_permissions
+PROJECT_ID='{{project-id}}' ./grant_permissions
 ```
 
-Deploy private PyPi
--------------------
+Deploy private PyPi application
+-------------------------------
+
+Check your `pypi.yaml` properties config and change (you may change `region` property, see [available reions](https://cloud.google.com/compute/docs/regions-zones/#locations) list) if needed. 
+
+After that execute command below:
 
 ```sh
 gcloud deployment-manager deployments create \
     'pypi' \
-    --config='install/pypi.yaml' \
+    --config='pypi.yaml' \
     --description='PyPi application' \
     --labels='app=pypi' \
     --project='{{project-id}}' \
