@@ -50,7 +50,28 @@ This service uploads new packages to your storage and invokes Builder. [Read mor
 Install
 -------
 
-Please read and follow these installation instructions: [INSTALL.md](INSTALL.md).
+Click to banner and follow installation instructions (2 required and 2 optional simple steps inside).
+
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fbackupner%2Fpypi-google-cloud&cloudshell_print=cloud-shell-readme.txt&cloudshell_open_in_editor=pypi.yaml&cloudshell_working_dir=install&cloudshell_tutorial=install.md)
+
+
+Uninstall
+---------
+
+- (Recommended) Just delete your private PyPi project. 
+
+  ```sh
+  gcloud projects delete 'YOUR_PROJECT_ID'
+  ```
+- (Alternative) If you use shared project run this command:
+
+  ```sh
+  gcloud deployment-manager deployments delete \
+      'pypi' \
+      --project='YOUR_PROJECT_ID'
+  ```
+
+  You should also check assigned roles for `YOUR_PROJECT_NUMBER@cloudservices.gserviceaccount.com` and `YOUR_PROJECT_NUMBER@cloudbuild.gserviceaccount.com` service accounts.
 
 
 License
