@@ -29,13 +29,7 @@ Check your `pypi.yaml` properties config and change (you may change `region` pro
 After that execute command below:
 
 ```sh
-gcloud deployment-manager deployments create \
-    'pypi' \
-    --config='pypi.yaml' \
-    --description='PyPi application' \
-    --labels='app=pypi' \
-    --project='{{project-id}}' \
-    --preview
+gcloud deployment-manager deployments create 'pypi' --config='pypi.yaml' --description='PyPi application' --labels='app=pypi' --project='{{project-id}}'
 ```
 
 (Optional) Configure custom domain name
@@ -48,12 +42,7 @@ Note `beta`, we use beta command here because of GA version of this command is n
 Replace `YOUR_DOMAIN_NAME` to your real domain name (ex. `packages.example.com`)
 
 ```sh
-gcloud beta run domain-mappings create \
-    --service='pypi-gcs-proxy' \
-    --domain='YOUR_DOMAIN_NAME' \
-    --platform='managed' \
-    --region='europe-west1' \
-    --project='{{project-id}}'
+gcloud beta run domain-mappings create --service='pypi-gcs-proxy' --domain='YOUR_DOMAIN_NAME' --platform='managed' --region='europe-west1' --project='{{project-id}}'
 ```
 
 Update DNS records.
@@ -70,8 +59,8 @@ You can use your domain now.
 Open your billing account page and click to `Budgets & Alerts` menu button. After that click to `CREATE BUDGET` button and follow instructions.
 
 
-Complete
---------
+Congratulations
+---------------
 
 Installation complete. 
 

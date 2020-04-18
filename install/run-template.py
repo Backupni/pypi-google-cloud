@@ -1,6 +1,3 @@
-from typing import Any, Dict, List
-
-
 ENV_VARS_TEMPLATE = ','.join([
     'STATIC_BUCKET_NAME={deployment}-{project}-static',
     'PACKAGES_BUCKET_NAME={deployment}-{project}-packages',
@@ -39,7 +36,7 @@ INTERNAL_PYPI_GCS_PROXY_IMAGE_TEMPLATE = 'eu.gcr.io/{project}/{deployment}-gcs-p
 PYPI_GCS_PROXY_IMAGE = 'backupner/pypi-gcs-proxy:latest'
 
 
-def generate_config(context: Any) -> Dict[str, List]:
+def generate_config(context):
     """We use `Cloud Build` actions here because of related `gcp-types` are not available for `Run` now.
 
     Todo: create custom type providers (or wait for Google)"""

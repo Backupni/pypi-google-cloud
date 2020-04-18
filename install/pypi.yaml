@@ -8,6 +8,6 @@ imports:
 
 resources:
 - name: pypi
-  path: pypi-template.py
+  type: pypi-template.py
   properties:
     region: 'europe-west1'

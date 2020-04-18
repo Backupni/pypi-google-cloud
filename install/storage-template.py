@@ -1,7 +1,4 @@
-from typing import Any, Dict, List
-
-
-def generate_config(context: Any) -> Dict[str, List]:
+def generate_config(context):
     deployment = context.env['deployment']
     project = context.env['project']
     bucket_name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)

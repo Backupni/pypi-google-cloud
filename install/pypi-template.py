@@ -1,7 +1,4 @@
-from typing import Any, Dict, List
-
-
-def generate_config(context: Any) -> Dict[str, List]:
+def generate_config(context):
     """Creates private PyPi."""
 
     resources = [

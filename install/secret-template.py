@@ -1,6 +1,3 @@
-from typing import Any, Dict, List
-
-
 GENERATE_RANDOM_TOKEN_COMMAND = "head -c '500' '/dev/urandom'" \
                                 " | tr -dc 'a-zA-Z0-9'" \
                                 " | fold -w '33'" \
@@ -26,7 +23,7 @@ GRANT_ROLE_COMMAND_TEMPLATE = "gcloud secrets add-iam-policy-binding " \
                               "--project='{project}'"
 
 
-def generate_config(context: Any) -> Dict[str, List]:
+def generate_config(context):
     """We use `Cloud Build` actions here because of related `gcp-types` are not available for `Secret manager` now.
 
     Todo: create custom type providers (or wait for Google)"""
