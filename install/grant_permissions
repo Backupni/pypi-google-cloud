@@ -6,8 +6,8 @@ import sys
 from typing import List, Optional
 
 
-DEPLOYMENT_MANAGER_ROLES: List[str] = ['roles/iam.serviceAccountAdmin', 'roles/storage.admin', 'roles/secretmanager.admin']
-CLOUD_BUILD_ROLES: List[str] = ['roles/run.admin', 'roles/iam.serviceAccountUser']  # todo: remove me
+DEPLOYMENT_MANAGER_ROLES: List[str] = ['roles/iam.serviceAccountAdmin', 'roles/storage.admin']
+CLOUD_BUILD_ROLES: List[str] = ['roles/run.admin', 'roles/secretmanager.admin', 'roles/iam.serviceAccountUser']  # todo: remove me
 
 
 def get_project_id() -> Optional[str]:
