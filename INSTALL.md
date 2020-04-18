@@ -19,20 +19,24 @@ Preparation
    git clone git@github.com:backupner/pypi-google-cloud.git && cd 'pypi-google-cloud'
    ```
 
-7. Prepare `Deployment Manager` (DM).
-
-   Grant `Service Account Admin` and `Storage Admin` roles to `Deployment Manager`'s project level service account.
-   Grant `Secret Manager Admin`, `Cloud Run Admin` and `Service Account User` roles to `Cloud Build`'s project level service account.
-
-   ```sh
-   bash ./install/grant_permissions
-   ```
-
 Setup
 -----
 
+### Grant permissions
+
+Prepare `Deployment Manager` (DM).
+
+Grant `Service Account Admin` and `Storage Admin` roles to `Deployment Manager`'s project level service account.
+Grant `Secret Manager Admin`, `Cloud Run Admin` and `Service Account User` roles to `Cloud Build`'s project level service account.
+
 Replace `YOUR_PROJECT_ID` in code below to your real Cloud project id and run command.
-   
+
+```sh
+PROJECT_ID='YOUR_PROJECT_ID' ./install/grant_permissions
+```
+
+### Deploy private PyPi
+
 ```sh
 gcloud deployment-manager deployments create \
     'pypi' \

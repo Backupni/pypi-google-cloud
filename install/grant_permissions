@@ -1,28 +1,60 @@
-#!/usr/bin/env bash
-set -Eeuxo pipefail
+#!/usr/bin/env python3
+import os
+import subprocess
+import sys
 
-read -rp 'Your project ID: ' project_id
-PROJECT_NUMBER=$(gcloud projects describe "$project_id" --format='value(project_number)')
-gcloud services enable deploymentmanager.googleapis.com cloudbuild.googleapis.com --project="$project_id"
-CLOUD_SERVICES_SERVICE_ACCOUNT="${PROJECT_NUMBER}@cloudservices.gserviceaccount.com"
-CLOUD_BUILD_SERVICE_ACCOUNT="${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com"
-gcloud projects add-iam-policy-binding \
-       "$project_id" \
-       --member="serviceAccount:${CLOUD_SERVICES_SERVICE_ACCOUNT}" \
-       --role='roles/iam.serviceAccountAdmin'
-gcloud projects add-iam-policy-binding \
-       "$project_id" \
-       --member="serviceAccount:${CLOUD_SERVICES_SERVICE_ACCOUNT}" \
-       --role='roles/storage.admin'
-gcloud projects add-iam-policy-binding \
-       "$project_id" \
-       --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
-       --role='roles/secretmanager.admin'
-gcloud projects add-iam-policy-binding \
-       "$project_id" \
-       --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
-       --role='roles/run.admin'
-gcloud projects add-iam-policy-binding \
-       "$project_id" \
-       --member="serviceAccount:${CLOUD_BUILD_SERVICE_ACCOUNT}" \
-       --role='roles/iam.serviceAccountUser'
+from typing import List, Optional
+
+
+DEPLOYMENT_MANAGER_ROLES: List[str] = ['roles/iam.serviceAccountAdmin', 'roles/storage.admin', 'roles/secretmanager.admin']
+CLOUD_BUILD_ROLES: List[str] = ['roles/run.admin', 'roles/iam.serviceAccountUser']  # todo: remove me
+
+
+def get_project_id() -> Optional[str]:
+    return os.getenv('PROJECT_ID')
+
+
+def get_project_number(project_id: str) -> Optional[int]:
+    command_args: List[str] = ['gcloud', 'projects', 'describe', project_id, '--format', 'value(project_number)']
+    result = subprocess.run(command_args, stdout=subprocess.PIPE)
+    if result.returncode == 0:
+        return int(result.stdout)
+    else:
+        return None
+
+
+def enable_services(project_id: str) -> int:
+    command_args: List[str] = ['gcloud', 'services', 'enable', 'deploymentmanager.googleapis.com', 'cloudbuild.googleapis.com', '--project', project_id]
+    return subprocess.run(command_args).returncode
+
+
+def grant_roles(project_id: str, project_number: int) -> bool:
+    cloud_services_service_account: str = '{project_number}@cloudservices.gserviceaccount.com'.format(project_number=project_number)
+    status = any([grant_role(project_id, cloud_services_service_account, role) for role in DEPLOYMENT_MANAGER_ROLES])
+    cloud_build_service_account: str = '{project_number}@cloudbuild.gserviceaccount.com'.format(project_number=project_number)  # todo: remove me
+    status2 = any([grant_role(project_id, cloud_build_service_account, role) for role in CLOUD_BUILD_ROLES])  # todo: remove me
+    return status or status2
+
+
+def grant_role(project_id: str, service_account: str, role: str) -> int:
+    command_args: List[str] = ['gcloud', 'projects', 'add-iam-policy-binding', project_id, '--member',
+                               'serviceAccount:{service_account}'.format(service_account=service_account), '--role', role]
+    return subprocess.run(command_args).returncode
+
+
+def main():
+    project_id: str = get_project_id()
+    if not project_id:
+        sys.exit('Error getting project id')
+    project_number: int = get_project_number(project_id)
+    if not project_number:
+        sys.exit('Error getting project number')
+    if enable_services(project_id):
+        sys.exit('Services enable error')
+    if grant_roles(project_id, project_number):
+        sys.exit('Role grant error')
+    print('Complete')
+
+
+if __name__ == '__main__':
+    main()
