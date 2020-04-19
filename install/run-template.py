@@ -56,6 +56,7 @@ def generate_config(context):
     delete_container_args[3] = delete_container_args[3].format(deployment=deployment)
     delete_container_args[7] = region
     delete_container_args[9] = project
+    bucket_name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
     resources = [
         {
             'name': 'download-{deployment}-proxy-container-image'.format(deployment=deployment),
@@ -96,8 +97,10 @@ def generate_config(context):
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-proxy'.format(deployment=deployment),
                     '{deployment}-services-enable-run'.format(deployment=deployment),
+                    '{bucket_name_prefix}packages-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
+                    '{bucket_name_prefix}static-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
+                    'create-{deployment}-token'.format(deployment=deployment),
                     'download-{deployment}-proxy-container-image'.format(deployment=deployment),
                 ],
                 'runtimePolicy': ['CREATE'],
