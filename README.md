@@ -12,8 +12,9 @@ Private PyPI repository on top of Google Cloud Platform.
 
 ```
 
-You need basic Python skills and Google Cloud account to continue.
+Project status: **beta** 
 
+Feel free to open new issues in case of any errors.
 
 Project Goals and Decisions
 ---------------------------
@@ -21,7 +22,7 @@ Project Goals and Decisions
 ### Secure
 
 - modular design
-- simple modules, without tons of unused code and API endpoints (code review should be easy)
+- simple components, without tons of unused code and API endpoints (code review should be easy)
 - static whenever it possible
 
 ### Optimised for Google Cloud
@@ -37,23 +38,35 @@ Project Goals and Decisions
 Structure: Project Services and Components
 ------------------------------------------
 
-Just 4 simple components.
+Just 3 simple components.
 
 ### Storage
 
-Storage is storage. This is the main component of the system. [Read more...](storage)
+Storage is storage. This is the main component of the system.
 
-### Builder
+- Cloud Storage bucket for Python wheel packages
+- Cloud Storage bucket for [PEP 503](https://www.python.org/dev/peps/pep-0503/) implementation and json's with [package metadata](https://warehouse.readthedocs.io/api-reference/json) `pypi/*/json`
+- Cloud Storage bucket for internal metadata for static site generator - package names, file hashes etc.
 
-This service updates your static repository. [Read more...](builder)
 
 ### Proxy
 
-This service adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users. [Read more...](proxy)
+This component adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users.
 
-### Uploader
+- managed Google Cloud Run
+- uses Python image with Starlette Python ASGI framework (it should be fast) ([GitHub repository](https://github.com/backupner/pypi-gcs-proxy-image))
+- uses custom Service Account
+- uses Google Cloud Secret for auth tokens storage
+- (optional) uses custom domain name
 
-This service uploads new packages to your storage and invokes Builder. [Read more...](uploader)
+### Builder / Uploader
+
+This component uploads new packages to your storage and updates your static repository..
+
+- Cloud Build process
+- combines metadata and prepare config for static generator tool
+- uses `dumb-pypi` image ([see available image tags](https://hub.docker.com/r/backupner/dumb-pypi/tags), [GitHub repository](https://github.com/backupner/dumb-pypi-image)) as static generator
+- uploads generated static files to bucket
 
 
 Install
@@ -62,6 +75,31 @@ Install
 Click to banner and follow installation instructions (2 required and 2 optional simple steps inside).
 
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fbackupner%2Fpypi-google-cloud&cloudshell_print=cloud-shell-readme.txt&cloudshell_open_in_editor=pypi.yaml&cloudshell_working_dir=install&cloudshell_tutorial=install.md)
+
+
+How to use
+----------
+
+Replace in command below:
+- `YOUR_DIST_DIRECTORY` to your dist directory (ex, `dist`),
+- `YOUR_PACKAGE_WHL_NAME` to your package whl name (ex. `my_package-0.1.0-py2.py3-none-any`),
+- `YOUR_PACKAGES_BUCKET` to your packages bucket name,
+- `YOUR_STATIC_BUCKET` to your packages bucket name,
+- `YOUR_META_DATA_BUCKET` to your packages bucket name,
+- `YOUR_DOMAIN` to your domain (ex. `packages.example.com`).
+
+
+You can edit `cloudbuild.yaml` for your needs. This is just example how you can manage your package uploading.
+
+Invoke on your CI after package test step.
+
+```
+gcloud builds submit \
+    'YOUR_DIST_DIRECTORY' \
+    --substitutions='_WHL_NAME="YOUR_PACKAGE_WHL_NAME",_PACKAGES_BUCKET="YOUR_PACKAGES_BUCKET",_META_DATA_BUCKET="YOUR_META_DATA_BUCKET",_STATIC_BUCKET="YOUR_STATIC_BUCKET",_DOMAIN="YOUR_DOMAIN"' \
+    --config='cloudbuild.yaml' \
+    --project='YOUR_PROJECT_ID'
+```
 
 
 Uninstall

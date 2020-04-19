@@ -1,6 +1,7 @@
 tags: ['pypi']
 
 steps:
+  # Uploader steps
   # Calculate package hash
   - name: python:3.8.2-alpine3.11
     entrypoint: 'sh'
@@ -24,7 +25,7 @@ steps:
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', '${_WHL_NAME}.whl.meta', 'gs://${_META_DATA_BUCKET}']
 
-  # Builder service steps copy
+  # Builder steps
   # Download all Python packages meta data
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp', '-r', 'gs://${_META_DATA_BUCKET}', '.']

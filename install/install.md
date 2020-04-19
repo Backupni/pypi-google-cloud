@@ -4,6 +4,8 @@ Installation Tutorial
 Select project
 --------------
 
+We recommend creating a new project.
+
 <walkthrough-project-billing-setup></walkthrough-project-billing-setup>
 
 
