@@ -1,9 +1,10 @@
 def generate_config(context):
     deployment = context.env['deployment']
     project = context.env['project']
+    name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
     resources = [
         {
-            'name': '{deployment}-proxy'.format(deployment=deployment),
+            'name': '{name_prefix}proxy'.format(name_prefix=name_prefix),
             'type': 'gcp-types/iam-v1:projects.serviceAccounts',
             'properties': {
                 'accountId': '{deployment}-proxy'.format(deployment=deployment),
@@ -26,7 +27,7 @@ def generate_config(context):
             },
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-services-enable-iam'.format(deployment=deployment),
+                    '{name_prefix}services-enable-iam'.format(name_prefix=name_prefix),
                 ],
             },
         },

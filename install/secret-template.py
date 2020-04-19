@@ -32,14 +32,15 @@ def generate_config(context):
     create_token_command = CREATE_TOKEN_COMMAND_TEMPLATE.format(deployment=deployment, project=project)
     delete_token_command = DELETE_TOKEN_COMMAND_TEMPLATE.format(deployment=deployment, project=project)
     grant_role_command = GRANT_ROLE_COMMAND_TEMPLATE.format(deployment=deployment, project=project)
+    name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
     resources = [
         {
-            'name': 'create-{deployment}-token'.format(deployment=deployment),
+            'name': '{name_prefix}create-token'.format(name_prefix=name_prefix),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-proxy'.format(deployment=deployment),
-                    '{deployment}-services-enable-secretmanager'.format(deployment=deployment),
+                    '{name_prefix}proxy'.format(name_prefix=name_prefix),
+                    '{name_prefix}services-enable-secretmanager'.format(name_prefix=name_prefix),
                 ],
                 'runtimePolicy': ['CREATE'],
             },
@@ -72,11 +73,11 @@ def generate_config(context):
             },
         },
         {
-            'name': 'delete-{deployment}-token'.format(deployment=deployment),
+            'name': '{name_prefix}delete-token'.format(name_prefix=name_prefix),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-services-enable-secretmanager'.format(deployment=deployment),
+                    '{name_prefix}services-enable-secretmanager'.format(name_prefix=name_prefix),
                 ],
                 'runtimePolicy': ['DELETE'],
             },

@@ -56,10 +56,10 @@ def generate_config(context):
     delete_container_args[3] = delete_container_args[3].format(deployment=deployment)
     delete_container_args[7] = region
     delete_container_args[9] = project
-    bucket_name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
+    name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
     resources = [
         {
-            'name': 'download-{deployment}-proxy-container-image'.format(deployment=deployment),
+            'name': '{name_prefix}download-proxy-container-image'.format(name_prefix=name_prefix),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'runtimePolicy': ['CREATE'],
@@ -93,15 +93,15 @@ def generate_config(context):
             },
         },
         {
-            'name': 'deploy-{deployment}-proxy-run-container'.format(deployment=deployment),
+            'name': '{name_prefix}deploy-proxy-run-container'.format(name_prefix=name_prefix),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-services-enable-run'.format(deployment=deployment),
-                    '{bucket_name_prefix}packages-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
-                    '{bucket_name_prefix}static-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
-                    'create-{deployment}-token'.format(deployment=deployment),
-                    'download-{deployment}-proxy-container-image'.format(deployment=deployment),
+                    '{name_prefix}services-enable-run'.format(name_prefix=name_prefix),
+                    '{name_prefix}packages-iam-policy'.format(name_prefix=name_prefix),
+                    '{name_prefix}static-iam-policy'.format(name_prefix=name_prefix),
+                    '{name_prefix}create-token'.format(name_prefix=name_prefix),
+                    '{name_prefix}download-proxy-container-image'.format(name_prefix=name_prefix),
                 ],
                 'runtimePolicy': ['CREATE'],
             },
@@ -120,11 +120,11 @@ def generate_config(context):
             },
         },
         {
-            'name': 'delete-{deployment}-proxy-run-service'.format(deployment=deployment),
+            'name': '{name_prefix}delete-proxy-run-service'.format(name_prefix=name_prefix),
             'action': 'gcp-types/cloudbuild-v1:cloudbuild.projects.builds.create',
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-services-enable-run'.format(deployment=deployment),
+                    '{name_prefix}services-enable-run'.format(name_prefix=name_prefix),
                 ],
                 'runtimePolicy': ['DELETE'],
             },

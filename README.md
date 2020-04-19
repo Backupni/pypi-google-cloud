@@ -3,6 +3,15 @@ Private PyPI - Google Cloud
 
 Private PyPI repository on top of Google Cloud Platform. 
 
+```
+
+  _____   ______ _____ _    _ _______ _______ _______       _____  __   __  _____  _____
+ |_____] |_____/   |    \  /  |_____|    |    |______      |_____]   \_/   |_____]   |
+ |       |    \_ __|__   \/   |     |    |    |______      |          |    |       __|__
+
+
+```
+
 You need basic Python skills and Google Cloud account to continue.
 
 

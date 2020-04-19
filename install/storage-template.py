@@ -1,10 +1,10 @@
 def generate_config(context):
     deployment = context.env['deployment']
     project = context.env['project']
-    bucket_name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
+    name_prefix = '{deployment}-{project}-'.format(deployment=deployment, project=project)
     resources = [
         {
-            'name': '{bucket_name_prefix}packages'.format(bucket_name_prefix=bucket_name_prefix),
+            'name': '{name_prefix}packages'.format(name_prefix=name_prefix),
             'type': 'gcp-types/storage-v1:buckets',
             'properties': {
                 'location': 'EU',
@@ -20,7 +20,7 @@ def generate_config(context):
             },
         },
         {
-            'name': '{bucket_name_prefix}static'.format(bucket_name_prefix=bucket_name_prefix),
+            'name': '{name_prefix}static'.format(name_prefix=name_prefix),
             'type': 'gcp-types/storage-v1:buckets',
             'properties': {
                 'location': 'EU',
@@ -36,7 +36,7 @@ def generate_config(context):
             },
         },
         {
-            'name': '{bucket_name_prefix}meta'.format(bucket_name_prefix=bucket_name_prefix),
+            'name': '{name_prefix}meta'.format(name_prefix=name_prefix),
             'type': 'gcp-types/storage-v1:buckets',
             'properties': {
                 'location': 'EU',
@@ -52,10 +52,10 @@ def generate_config(context):
             },
         },
         {
-            'name': '{bucket_name_prefix}packages-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
+            'name': '{name_prefix}packages-iam-policy'.format(name_prefix=name_prefix),
             'action': 'gcp-types/storage-v1:storage.buckets.setIamPolicy',
             'properties': {
-                'bucket': '{bucket_name_prefix}packages'.format(bucket_name_prefix=bucket_name_prefix),
+                'bucket': '{name_prefix}packages'.format(name_prefix=name_prefix),
                 'project': project,
                 'bindings': [
                     {
@@ -90,16 +90,16 @@ def generate_config(context):
             },
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-proxy'.format(deployment=deployment),
-                    '{bucket_name_prefix}packages'.format(bucket_name_prefix=bucket_name_prefix),
+                    '{name_prefix}proxy'.format(name_prefix=name_prefix),
+                    '{name_prefix}packages'.format(name_prefix=name_prefix),
                 ],
             },
         },
         {
-            'name': '{bucket_name_prefix}static-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
+            'name': '{name_prefix}static-iam-policy'.format(name_prefix=name_prefix),
             'action': 'gcp-types/storage-v1:storage.buckets.setIamPolicy',
             'properties': {
-                'bucket': '{bucket_name_prefix}static'.format(bucket_name_prefix=bucket_name_prefix),
+                'bucket': '{name_prefix}static'.format(name_prefix=name_prefix),
                 'project': project,
                 'bindings': [
                     {
@@ -134,16 +134,16 @@ def generate_config(context):
             },
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-proxy'.format(deployment=deployment),
-                    '{bucket_name_prefix}static'.format(bucket_name_prefix=bucket_name_prefix),
+                    '{name_prefix}proxy'.format(name_prefix=name_prefix),
+                    '{name_prefix}static'.format(name_prefix=name_prefix),
                 ],
             },
         },
         {
-            'name': '{bucket_name_prefix}meta-iam-policy'.format(bucket_name_prefix=bucket_name_prefix),
+            'name': '{name_prefix}meta-iam-policy'.format(name_prefix=name_prefix),
             'action': 'gcp-types/storage-v1:storage.buckets.setIamPolicy',
             'properties': {
-                'bucket': '{bucket_name_prefix}meta'.format(bucket_name_prefix=bucket_name_prefix),
+                'bucket': '{name_prefix}meta'.format(name_prefix=name_prefix),
                 'project': project,
                 'bindings': [
                     {
@@ -176,8 +176,8 @@ def generate_config(context):
             },
             'metadata': {
                 'dependsOn': [
-                    '{deployment}-proxy'.format(deployment=deployment),
-                    '{bucket_name_prefix}meta'.format(bucket_name_prefix=bucket_name_prefix),
+                    '{name_prefix}proxy'.format(name_prefix=name_prefix),
+                    '{name_prefix}meta'.format(name_prefix=name_prefix),
                 ],
             },
         },
