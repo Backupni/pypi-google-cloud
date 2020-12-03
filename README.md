@@ -54,7 +54,7 @@ Storage is storage. This is the main component of the system.
 This component adds basic auth with tokens support and provides access to packages. Simple layer between Storage and end users.
 
 - managed Google Cloud Run
-- uses Python image with Starlette Python ASGI framework (it should be fast) ([GitHub repository](https://github.com/backupner/pypi-gcs-proxy-image))
+- uses Python image with Starlette Python ASGI framework (it should be fast) ([GitHub repository](https://github.com/backupni/pypi-gcs-proxy-image))
 - uses custom Service Account
 - uses Google Cloud Secret for auth tokens storage
 - (optional) uses custom domain name
@@ -65,7 +65,7 @@ This component uploads new packages to your storage and updates your static repo
 
 - Cloud Build process
 - combines metadata and prepare config for static generator tool
-- uses `dumb-pypi` image ([see available image tags](https://hub.docker.com/r/backupner/dumb-pypi/tags), [GitHub repository](https://github.com/backupner/dumb-pypi-image)) as static generator
+- uses `dumb-pypi` image ([see available image tags](https://hub.docker.com/r/backupni/dumb-pypi/tags), [GitHub repository](https://github.com/backupni/dumb-pypi-image)) as static generator
 - uploads generated static files to bucket
 
 
@@ -74,7 +74,7 @@ Install
 
 Click to banner and follow installation instructions (2 required and 2 optional simple steps inside).
 
-[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fbackupner%2Fpypi-google-cloud&cloudshell_print=cloud-shell-readme.txt&cloudshell_open_in_editor=pypi.yaml&cloudshell_working_dir=install&cloudshell_tutorial=install.md)
+[![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fbackupni%2Fpypi-google-cloud&cloudshell_print=cloud-shell-readme.txt&cloudshell_open_in_editor=pypi.yaml&cloudshell_working_dir=install&cloudshell_tutorial=install.md)
 
 
 How to use

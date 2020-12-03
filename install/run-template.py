@@ -33,7 +33,7 @@ DELETE_SERVICE_ARGS_TEMPLATE = [
 ]
 
 INTERNAL_PYPI_GCS_PROXY_IMAGE_TEMPLATE = 'eu.gcr.io/{project}/{deployment}-gcs-proxy:latest'
-PYPI_GCS_PROXY_IMAGE = 'backupner/pypi-gcs-proxy:latest'
+PYPI_GCS_PROXY_IMAGE = 'backupni/pypi-gcs-proxy:latest'
 
 
 def generate_config(context):

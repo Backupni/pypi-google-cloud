@@ -44,5 +44,5 @@ steps:
 substitutions:
   _ALGORITHM: sha256
   _DIR: raw
-  _DUMB_PYPI_IMAGE: 'backupner/dumb-pypi:1.4-latest'
+  _DUMB_PYPI_IMAGE: 'backupni/dumb-pypi:1.5.1-latest'
   _USER: CI
